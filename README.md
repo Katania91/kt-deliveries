@@ -1,5 +1,7 @@
 # 📦 KT-Deliveries Script
 
+<img src="https://i.ibb.co/mSnwdpT/up.png" alt="Cover" width="100%" />
+
 A fully-featured FiveM delivery job script that offers a randomized package delivery system for players. Designed for flexibility and ease of customization, this script supports both **QBCore** and **ESX** frameworks and integrates with `ox_lib` for notifications, progress bars, and interaction targets.
 
 ## ✨ Features
