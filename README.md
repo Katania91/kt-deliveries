@@ -2,7 +2,7 @@
 
 <img src="https://i.ibb.co/mSnwdpT/up.png" alt="Cover" width="100%" />
 
-A fully-featured FiveM delivery job script that offers a randomized package delivery system for players. Designed for flexibility and ease of customization, this script supports both **QBCore** and **ESX** frameworks and integrates with `ox_lib` for notifications, progress bars, and interaction targets.
+A fully-featured FiveM delivery job script that offers a randomized package delivery system for players. Designed for flexibility and ease of customization, this script supports **QBCore**, **ESX**, **ox_core**, **qbox**, and **nd-core** frameworks, integrating with `ox_lib` for notifications, progress bars, and interaction targets.
 
 ## ✨ Features
 
@@ -10,12 +10,14 @@ A fully-featured FiveM delivery job script that offers a randomized package deli
 - **🚚 Realistic Delivery Job Experience**: Players interact with an NPC (Michael) to start and end their job, collect packages, and receive payments.
 - **👕 Customizable Outfits**: Players change into specific uniforms for the job, with different configurations for male and female characters.
 - **⏰ Penalized Late Deliveries**: Deliveries completed past the time limit receive reduced pay.
-- **⚙️ Framework Compatibility**: Supports both **QBCore** and **ESX** frameworks.
+- **⚙️ Expanded Framework Compatibility (NEW V1.1.0)**: Now supports **QBCore**, **ESX**, **ox_core**, **qbox**, and **nd-core** frameworks.
+- **💵 $300 Van Deposit System (NEW V1.1.0)**: A deposit is deducted when the van is spawned, refunded upon returning to Michael.
+- **🚶 Enhanced Ped Behavior (NEW V1.1.0)**: Delivery NPCs now walk away after receiving a package and disappear after a short delay.
 - **🌐 Configurable Notifications and Translations**: All messages are localized, allowing easy customization for different languages.
 
 ## 📋 Requirements
 
-- **Framework**: QBCore or ESX (specified in `config.lua`).
+- **Framework**: QBCore, ESX, ox_core, qbox, or nd-core (specified in `config.lua`).
 - **ox_lib**: Required for notifications, progress bars, and target interactions.
 - **Emote Script**: Recommended to have an emote script like `rpemotes-reborn` to support the "box carrying" animation (`/e box`).
 
@@ -23,14 +25,14 @@ A fully-featured FiveM delivery job script that offers a randomized package deli
 
 1. **Download and Install Dependencies**:
    - Ensure that `ox_lib` is installed and running on your server.
-   - If you haven't, install an emote script like `rpemotes-reborn`.
+   - Install an emote script like `rpemotes-reborn`.
 
 2. **Clone or Download the Repository**:
    - Place the `kt-deliveries` folder in your `resources` directory.
 
 3. **Configure the Script**:
-   - Open `config.lua` to adjust settings to your preference.
-   - Set your desired framework (`'qbcore'` or `'esx'`).
+   - Open `config.lua` to adjust settings.
+   - Set your framework (`'qbcore'`, `'esx'`, `'ox'`, `'qbox'`, or `'nd'`).
    - Define the server language (`'en'`, `'it'`, `'fr'`, etc.) and notification position.
 
 4. **Add to Server Configuration**:
@@ -42,7 +44,7 @@ A fully-featured FiveM delivery job script that offers a randomized package deli
 ## ⚙️ Configuration (`config.lua`)
 
 ### Framework and Locale
-- **`Config.Framework`**: Set to `'qbcore'` or `'esx'`.
+- **`Config.Framework`**: Set to `'qbcore'`, `'esx'`, `'ox'`, `'qbox'`, or `'nd'`.
 - **`Config.Locale`**: Set the language for notifications and labels (e.g., `'en'`, `'it'`, `'fr'`, etc.).
 
 ### NPC Configuration
@@ -68,18 +70,18 @@ A fully-featured FiveM delivery job script that offers a randomized package deli
 
 1. **Start the Job**:
    - Go to Michael (location specified in `config.lua`) and interact with him to start the delivery job.
-   - Michael will provide a uniform, and a delivery van will spawn nearby.
+   - Michael will provide a uniform, and a delivery van will spawn nearby, with a $300 deposit deducted.
 
 2. **Collect Packages**:
    - Approach the van and interact to pick up packages. A carrying animation will play while you hold the package.
 
 3. **Make Deliveries**:
    - Follow the GPS route to each randomized delivery point.
-   - At each location, deliver the package to the waiting NPC.
+   - At each location, deliver the package to the waiting NPC, who will walk away and disappear shortly.
 
 4. **Return to Michael**:
    - Once all deliveries are complete, the GPS will guide you back to Michael.
-   - Return the van and end your shift to receive your payment.
+   - Return the van and end your shift to receive your full payment, including a refund of your $300 deposit.
 
 ## 🌐 Translations
 
@@ -142,13 +144,12 @@ Config.Outfit = {
     }
 }
 ```
-
 ## 🔧 Commands and Interactions
 
-- **Interact with Michael**: Start and end the delivery job by interacting with Michael.
-- **Take Package**: Collect packages from the van by interacting with it.
-- **Deliver Package**: Deliver packages to specified locations by interacting with NPCs.
-- **Return GPS**: After completing deliveries, a GPS route guides the player back to Michael.
+- Interact with Michael: Start and end the delivery job by interacting with Michael.
+- Take Package: Collect packages from the van by interacting with it.
+- Deliver Package: Deliver packages to specified locations by interacting with NPCs.
+- Return GPS: After completing deliveries, a GPS route guides the player back to Michael for deposit return.
 
 ## 📜 License
 
