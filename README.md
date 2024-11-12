@@ -63,7 +63,22 @@ A fully-featured FiveM delivery job script that offers a randomized package deli
 - **`Config.MaxDeliveryTime`**: Time limit per delivery (in milliseconds).
 - **`Config.ReducedPaymentPercentage`**: Percentage of reward if delivery is late.
 
-### 👕 Outfits
+## ⚙️ Core Framework Dependencies
+
+The `kt-deliveries` script is compatible with multiple core frameworks. To enable compatibility for your chosen core, make sure to uncomment the relevant dependency in the `fxmanifest.lua` file.
+
+### Setup Instructions
+
+1. **Open the `fxmanifest.lua` File**:
+   - Locate the `dependencies` section where core frameworks are listed as comments.
+
+2. **Uncomment the Line for Your Core Framework**:
+   - Based on the core framework you are using, uncomment the appropriate line. 
+
+3. **Save the File**:
+   - Once you've uncommented the correct core dependency, save the `fxmanifest.lua` file.
+
+## 👕 Outfits
 - **`Config.Outfit.Male`** & **`Config.Outfit.Female`**: Customize the job outfits for male and female characters. Supports torso, legs, shoes, top, and arms components.
 
 ## 📖 Usage
