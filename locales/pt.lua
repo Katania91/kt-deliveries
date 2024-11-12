@@ -11,10 +11,10 @@ Locales['pt'] = {
     no_more_packages = "Você completou todas as entregas! Não há mais pacotes.",
 
     -- Mensagens de progresso
-    start_job = "Boa sorte! Vou te emprestar algumas roupas adequadas.",
+    start_job = "Bom trabalho! Vou te emprestar uma roupa adequada. Vou pegar $300 como caução pela van, que você receberá de volta ao retornar.",
     load_package = "Entregando o pacote...",
     go_to_next_delivery = "Dirija-se para a próxima entrega.",
-    job_finished = "Você terminou o trabalho. Aqui estão suas roupas de volta.",
+    job_finished = "Você terminou o trabalho. Aqui estão suas roupas e os $300 de caução de volta.",
 
     -- Etiquetas de interação ox_target
     label_talk_michael = "Falar com Michael",
