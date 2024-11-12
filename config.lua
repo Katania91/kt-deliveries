@@ -1,10 +1,10 @@
 Config = {}
 
--- Specify the framework in use: 'qbcore' or 'esx'
-Config.Framework = 'qbcore' -- Change to 'esx' for ESX compatibility
+-- Specify the framework in use: 'qbcore', 'esx', 'ox_core', 'ndcore', or 'qbox'
+Config.Framework = 'qbcore' -- Change to 'esx', 'ox_core', 'ndcore', or 'qbox' as needed
 
 -- Server language
-Config.Locale = 'es'
+Config.Locale = 'en'
 
 Config.NotificationPosition = 'center-right' -- Change to 'top-right', 'center-right', or any other position supported by ox_lib
 
