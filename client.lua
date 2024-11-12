@@ -95,11 +95,30 @@ local function spawnDeliveryPed(coords)
     table.insert(deliveryPeds, deliveryPed)
 end
 
--- Function to delete a specific delivery ped
+-- Function to make the ped walk away and delete it after 10 seconds
 local function deleteDeliveryPed(ped)
     if DoesEntityExist(ped) then
         exports.ox_target:removeLocalEntity(ped, { 'dropOffPackage' })
-        DeleteEntity(ped)
+        
+        -- Unfreeze the ped in case it was frozen
+        FreezeEntityPosition(ped, false)
+        
+        -- Generate a random direction for the ped to walk
+        local xOffset = math.random(-10, 10) * 1.0
+        local yOffset = math.random(-10, 10) * 1.0
+        local pedCoords = GetEntityCoords(ped)
+        local targetCoords = vector3(pedCoords.x + xOffset, pedCoords.y + yOffset, pedCoords.z)
+        
+        -- Make the ped walk to the random position
+        TaskGoStraightToCoord(ped, targetCoords.x, targetCoords.y, targetCoords.z, 1.0, -1, 0.0, 0.0)
+
+        -- Set a timer to delete the ped after 10 seconds
+        CreateThread(function()
+            Wait(10000) -- Wait 10 seconds
+            if DoesEntityExist(ped) then
+                DeleteEntity(ped)
+            end
+        end)
     end
 end
 
@@ -123,7 +142,7 @@ end
 local function completeDeliveryMission()
     exports['ox_lib']:notify({ type = 'success', description = Translations.all_deliveries_done, duration = 5000, position = Config.NotificationPosition })
     deleteAllDeliveryPeds()
-    setReturnGPS()  
+    setReturnGPS()
 end
 
 -- Spawn Michael and set up interaction
@@ -205,6 +224,9 @@ end
 
 -- Spawn loaded delivery van
 local function spawnDeliveryVan()
+    -- Deduct deposit from player
+    TriggerServerEvent('kt-deliveries:deductDeposit')
+    
     RequestModel(Config.VanModel)
     while not HasModelLoaded(Config.VanModel) do Wait(0) end
     furgone = CreateVehicle(Config.VanModel, Config.VanSpawnCoords.x, Config.VanSpawnCoords.y, Config.VanSpawnCoords.z, Config.VanSpawnHeading, true, false)
@@ -302,6 +324,7 @@ RegisterNetEvent('deliveries:endJob', function()
     if currentDeliveryIndex > Config.TotalPackages then
         exports['ox_lib']:notify({ type = 'success', description = Translations.thank_you_message, duration = 7000, position = Config.NotificationPosition })
     end
+
     restorePlayerOutfit()
     exports['ox_lib']:notify({ type = 'info', description = Translations.job_finished, duration = 5000, position = Config.NotificationPosition })
     if DoesEntityExist(furgone) then DeleteEntity(furgone) end
@@ -309,6 +332,9 @@ RegisterNetEvent('deliveries:endJob', function()
     deleteAllDeliveryPeds()
     isInDelivery = false
     currentDeliveryIndex = 1
+
+    -- Return the deposit when job ends
+    TriggerServerEvent('kt-deliveries:returnDeposit')
 end)
 
 -- At startup, spawn Michael
