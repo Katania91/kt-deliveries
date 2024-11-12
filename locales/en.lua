@@ -11,10 +11,10 @@ Locales['en'] = {
     no_more_packages = "You've completed all deliveries! No more packages left to deliver.",
 
     -- Progress messages
-    start_job = "Wishing you good luck! I’ll lend you some suitable clothes.",
+    start_job = "Have a great job! I'll lend you a suitable outfit. I'll take $300 as a deposit for the van, which you'll get back upon return.",
     load_package = "Delivering the package...",
     go_to_next_delivery = "Proceed to the next delivery.",
-    job_finished = "You've finished the job. Here are your clothes back.",
+    job_finished = "You have finished the job. Here are your clothes and the $300 deposit back.",
 
     -- ox_target interaction labels
     label_talk_michael = "Talk to Michael",
