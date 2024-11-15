@@ -225,8 +225,8 @@ end
 -- Spawn loaded delivery van
 local function spawnDeliveryVan()
     -- Deduct deposit from player
-    TriggerServerEvent('kt-deliveries:deductDeposit')
-    
+    if not lib.callback.await('kt-deliveries:deductDeposit', false) then return false end
+
     RequestModel(Config.VanModel)
     while not HasModelLoaded(Config.VanModel) do Wait(0) end
     furgone = CreateVehicle(Config.VanModel, Config.VanSpawnCoords.x, Config.VanSpawnCoords.y, Config.VanSpawnCoords.z, Config.VanSpawnHeading, true, false)
@@ -243,6 +243,9 @@ local function spawnDeliveryVan()
             end
         }
     })
+
+    if Config.Framework == "qb-core" then TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', string.gsub(GetVehicleNumberPlateText(furgone), '^%s*(.-)%s*$', '%1'), true) end -- for qb only
+    return true
 end
 
 -- Start the next delivery by updating the current location
@@ -279,10 +282,16 @@ RegisterNetEvent('deliveries:beginMission', function()
         return
     end
 
+    if not spawnDeliveryVan() then
+        exports['ox_lib']:notify({ type = 'error', description = Translations.not_enough_money, duration = 5000, position = Config.NotificationPosition })
+        return
+    end
+
     exports['ox_lib']:notify({ type = 'info', description = Translations.start_job, duration = 5000, position = Config.NotificationPosition })
+
     savePlayerOutfit()
     applyWorkOutfit()
-    spawnDeliveryVan()
+
     isInDelivery = true
     startNextDelivery()
 end)

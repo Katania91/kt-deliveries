@@ -17,8 +17,7 @@ elseif Config.Framework == 'nd' then
 end
 
 -- Event to deduct the $300 deposit at the start of the job
-RegisterNetEvent('kt-deliveries:deductDeposit')
-AddEventHandler('kt-deliveries:deductDeposit', function()
+lib.callback.register('kt-deliveries:deductDeposit', function(source)
     local xPlayer = nil
     local depositAmount = 300
 
@@ -33,14 +32,17 @@ AddEventHandler('kt-deliveries:deductDeposit', function()
 
     if not xPlayer then return end
 
+    local result = false
     -- Deduct the deposit from the player
     if Config.Framework == 'qbcore' or Config.Framework == 'qbox' then
-        xPlayer.Functions.RemoveMoney('cash', depositAmount)
+        result = xPlayer.Functions.RemoveMoney('cash', depositAmount)
     elseif Config.Framework == 'esx' or Config.Framework == 'ox' then
-        xPlayer.removeMoney(depositAmount)
+        result = xPlayer.removeMoney(depositAmount)
     elseif Config.Framework == 'nd' then
-        xPlayer.removeCurrency('cash', depositAmount)
+        result = xPlayer.removeCurrency('cash', depositAmount)
     end
+
+    return result
 end)
 
 -- Event to handle payment per delivery
