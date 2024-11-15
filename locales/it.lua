@@ -21,5 +21,5 @@ Locales['it'] = {
     label_load_package = "Prendi pacco",
     label_deliver_package = "Consegna pacco",
     label_end_job = "Termina lavoro",
-    not_enough_money = "Non hai abbastanza soldi per pagare la cauzione.",
+    not_enough_money = "Ti servono 300$ come cauzione per il furgone ed iniziare il lavoro.",
 }
