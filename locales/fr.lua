@@ -20,5 +20,6 @@ Locales['fr'] = {
     label_talk_michael = "Parler à Michael",
     label_load_package = "Prendre le colis",
     label_deliver_package = "Livrer le colis",
-    label_end_job = "Terminer le travail"
+    label_end_job = "Terminer le travail",
+    not_enough_money = "Vous n'avez pas assez d'argent pour payer la caution.",
 }
