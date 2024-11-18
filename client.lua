@@ -244,7 +244,7 @@ local function spawnDeliveryVan()
         }
     })
 
-    if Config.Framework == "qb-core" then TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', string.gsub(GetVehicleNumberPlateText(furgone), '^%s*(.-)%s*$', '%1'), true) end -- for qb only
+    if Config.Framework == "qbcore" then TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', string.gsub(GetVehicleNumberPlateText(furgone), '^%s*(.-)%s*$', '%1'), true) end -- for qb only
     return true
 end
 
