@@ -16,6 +16,20 @@ elseif Config.Framework == 'nd' then
     NDCore = exports['nd-core']:getCoreObject()
 end
 
+local activeDeliveries = {}
+
+-- Event to start a delivery job
+RegisterNetEvent('kt-deliveries:startJob')
+AddEventHandler('kt-deliveries:startJob', function()
+    local src = source
+    if activeDeliveries[src] then return end
+
+    activeDeliveries[src] = {
+        deliveriesCompleted = 0,
+        depositPaid = true
+    }
+end)
+
 -- Event to deduct the $300 deposit at the start of the job
 lib.callback.register('kt-deliveries:deductDeposit', function(source)
     local xPlayer = nil
@@ -30,33 +44,42 @@ lib.callback.register('kt-deliveries:deductDeposit', function(source)
         xPlayer = NDCore.Functions.GetPlayer(source)
     end
 
-    if not xPlayer then return end
+    if not xPlayer then return false end
 
-    local result = false
     -- Deduct the deposit from the player
+    local success = false
     if Config.Framework == 'qbcore' or Config.Framework == 'qbox' then
-        result = xPlayer.Functions.RemoveMoney('cash', depositAmount)
+        success = xPlayer.Functions.RemoveMoney('cash', depositAmount)
     elseif Config.Framework == 'esx' or Config.Framework == 'ox' then
-        result = xPlayer.removeMoney(depositAmount)
+        success = xPlayer.removeMoney(depositAmount)
     elseif Config.Framework == 'nd' then
-        result = xPlayer.removeCurrency('cash', depositAmount)
+        success = xPlayer.removeCurrency('cash', depositAmount)
     end
 
-    return result
+    if success then
+        activeDeliveries[source] = { deliveriesCompleted = 0, depositPaid = true }
+        return true
+    end
+
+    return false
 end)
 
 -- Event to handle payment per delivery
 RegisterNetEvent('kt-deliveries:riceviPagamento')
 AddEventHandler('kt-deliveries:riceviPagamento', function(amount)
+    local src = source
+    local playerData = activeDeliveries[src]
+    if not playerData then return end
+
     local xPlayer = nil
 
     -- Fetch the player object based on the framework
     if Config.Framework == 'qbcore' or Config.Framework == 'qbox' then
-        xPlayer = QBCore.Functions.GetPlayer(source)
+        xPlayer = QBCore.Functions.GetPlayer(src)
     elseif Config.Framework == 'esx' or Config.Framework == 'ox' then
-        xPlayer = ESX.GetPlayerFromId(source)
+        xPlayer = ESX.GetPlayerFromId(src)
     elseif Config.Framework == 'nd' then
-        xPlayer = NDCore.Functions.GetPlayer(source)
+        xPlayer = NDCore.Functions.GetPlayer(src)
     end
 
     if not xPlayer then return end
@@ -71,6 +94,7 @@ AddEventHandler('kt-deliveries:riceviPagamento', function(amount)
         elseif Config.Framework == 'nd' then
             xPlayer.addCurrency('cash', amount)
         end
+        playerData.deliveriesCompleted = playerData.deliveriesCompleted + 1
     else
         print(('kt-deliveries: Payment failed for %s: invalid amount (%s)'):format(xPlayer.getName(), tostring(amount)))
     end
@@ -79,16 +103,20 @@ end)
 -- Event to return the deposit when the job ends
 RegisterNetEvent('kt-deliveries:returnDeposit')
 AddEventHandler('kt-deliveries:returnDeposit', function()
+    local src = source
+    local playerData = activeDeliveries[src]
+    if not playerData or not playerData.depositPaid then return end
+
     local xPlayer = nil
     local depositAmount = 300
 
     -- Fetch the player object based on the framework
     if Config.Framework == 'qbcore' or Config.Framework == 'qbox' then
-        xPlayer = QBCore.Functions.GetPlayer(source)
+        xPlayer = QBCore.Functions.GetPlayer(src)
     elseif Config.Framework == 'esx' or Config.Framework == 'ox' then
-        xPlayer = ESX.GetPlayerFromId(source)
+        xPlayer = ESX.GetPlayerFromId(src)
     elseif Config.Framework == 'nd' then
-        xPlayer = NDCore.Functions.GetPlayer(source)
+        xPlayer = NDCore.Functions.GetPlayer(src)
     end
 
     if not xPlayer then return end
@@ -101,4 +129,12 @@ AddEventHandler('kt-deliveries:returnDeposit', function()
     elseif Config.Framework == 'nd' then
         xPlayer.addCurrency('cash', depositAmount)
     end
+
+    activeDeliveries[src] = nil
+end)
+
+-- Clean up when a player disconnects
+AddEventHandler('playerDropped', function()
+    local src = source
+    activeDeliveries[src] = nil
 end)
