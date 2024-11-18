@@ -95,26 +95,15 @@ local function spawnDeliveryPed(coords)
     table.insert(deliveryPeds, deliveryPed)
 end
 
--- Function to make the ped walk away and delete it after 10 seconds
 local function deleteDeliveryPed(ped)
     if DoesEntityExist(ped) then
         exports.ox_target:removeLocalEntity(ped, { 'dropOffPackage' })
-        
-        -- Unfreeze the ped in case it was frozen
         FreezeEntityPosition(ped, false)
-        
-        -- Generate a random direction for the ped to walk
-        local xOffset = math.random(-10, 10) * 1.0
-        local yOffset = math.random(-10, 10) * 1.0
-        local pedCoords = GetEntityCoords(ped)
-        local targetCoords = vector3(pedCoords.x + xOffset, pedCoords.y + yOffset, pedCoords.z)
-        
-        -- Make the ped walk to the random position
-        TaskGoStraightToCoord(ped, targetCoords.x, targetCoords.y, targetCoords.z, 1.0, -1, 0.0, 0.0)
+        TaskWanderStandard(ped --[[ ped ]], 1 --[[ number ]], 1 --[[ integer ]])
 
         -- Set a timer to delete the ped after 10 seconds
         CreateThread(function()
-            Wait(10000) -- Wait 10 seconds
+            Wait(math.random(30000, 60000)) -- Wait 30 to 60 seconds
             if DoesEntityExist(ped) then
                 DeleteEntity(ped)
             end
@@ -224,8 +213,10 @@ end
 
 -- Spawn loaded delivery van
 local function spawnDeliveryVan()
-    -- Deduct deposit from player
-    if not lib.callback.await('kt-deliveries:deductDeposit', false) then return false end
+    if not lib.callback.await('kt-deliveries:deductDeposit', false) then
+        exports['ox_lib']:notify({ type = 'error', description = Translations.not_enough_money, duration = 5000, position = Config.NotificationPosition })
+        return false
+    end
 
     RequestModel(Config.VanModel)
     while not HasModelLoaded(Config.VanModel) do Wait(0) end
@@ -244,9 +235,13 @@ local function spawnDeliveryVan()
         }
     })
 
-    if Config.Framework == "qbcore" then TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', string.gsub(GetVehicleNumberPlateText(furgone), '^%s*(.-)%s*$', '%1'), true) end -- for qb only
+    if Config.Framework == "qbcore" then
+        TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', string.gsub(GetVehicleNumberPlateText(furgone), '^%s*(.-)%s*$', '%1'), true)
+    end
+
     return true
 end
+
 
 -- Start the next delivery by updating the current location
 local function startNextDelivery()
@@ -342,7 +337,7 @@ RegisterNetEvent('deliveries:endJob', function()
     isInDelivery = false
     currentDeliveryIndex = 1
 
-    -- Return the deposit when job ends
+    -- Inform the server to return the deposit
     TriggerServerEvent('kt-deliveries:returnDeposit')
 end)
 
