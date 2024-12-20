@@ -46,6 +46,22 @@ lib.callback.register('kt-deliveries:deductDeposit', function(source)
 
     if not xPlayer then return false end
 
+    local result = false
+    if Config.Framework == 'qbcore' or Config.Framework == 'qbox' then
+        result = xPlayer.Functions.GetMoney('cash') >= depositAmount
+        if result then xPlayer.Functions.RemoveMoney('cash', depositAmount) end
+    elseif Config.Framework == 'esx' then
+        result = xPlayer.getMoney() >= depositAmount
+        if result then xPlayer.removeMoney(depositAmount) end
+    elseif Config.Framework == 'nd' then
+        result = xPlayer.deductMoney("cash", depositAmount, "Job deposit")
+    elseif Config.Framework == 'ox' then
+        result = false -- not sure what is
+    end
+
+    return result
+end)
+
     -- Deduct the deposit from the player
     local success = false
     if Config.Framework == 'qbcore' or Config.Framework == 'qbox' then
